@@ -1,0 +1,11 @@
+{
+  "inputs": [],
+  "outputs": [],
+  "nodes": [],
+  "edges": [
+    {
+      "from": "preprocessing_tf",
+      "to": "inference_input"
+    }
+  ]
+}

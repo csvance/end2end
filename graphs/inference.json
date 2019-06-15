@@ -1,0 +1,36 @@
+{
+  "inputs": [
+    "input"
+  ],
+  "outputs": [
+    "output"
+  ],
+  "nodes": [
+    {
+      "id": "input",
+      "label": "Input",
+      "dshape": [
+        224,
+        224,
+        3
+      ],
+      "dtype": "float32"
+    },
+    {
+      "id": "output",
+      "label": "Output",
+      "dshape": [
+        7,
+        7,
+        256
+      ],
+      "dtype": "float32"
+    }
+  ],
+  "edges": [
+    {
+      "from": "input",
+      "to": "output"
+    }
+  ]
+}

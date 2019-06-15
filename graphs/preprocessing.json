@@ -1,0 +1,64 @@
+{
+  "inputs": [
+    "equalize_histogram"
+  ],
+  "outputs": [
+    "tf"
+  ],
+  "nodes": [
+    {
+      "id": "equalize_histogram",
+      "label": "Equalize Histogram",
+      "dshape": [
+        1024,
+        1024,
+        3
+      ],
+      "dtype": "uint8"
+    },
+    {
+      "id": "float32",
+      "label": "Cast: float32",
+      "dshape": [
+        1024,
+        1024,
+        3
+      ],
+      "dtype": "float32"
+    },
+    {
+      "id": "resize",
+      "label": "Resize: 224*224",
+      "dshape": [
+        224,
+        224,
+        3
+      ],
+      "dtype": "float32"
+    },
+    {
+      "id": "tf",
+      "label": "(input / 127.5) - 1",
+      "dshape": [
+        224,
+        224,
+        3
+      ],
+      "dtype": "float32"
+    }
+  ],
+  "edges": [
+    {
+      "from": "equalize_histogram",
+      "to": "float32"
+    },
+    {
+      "from": "float32",
+      "to": "resize"
+    },
+    {
+      "from": "resize",
+      "to": "tf"
+    }
+  ]
+}

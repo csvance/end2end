@@ -1,0 +1,200 @@
+<!doctype html>
+<html>
+<head>
+    <title>Network | Clustering</title>
+
+    <script type="text/javascript" src="node_modules/vis/dist/vis.js"></script>
+    <script type="text/javascript" src="node_modules/jquery/dist/jquery.js"></script>
+
+    <link href="node_modules/vis/dist/vis.css" rel="stylesheet" type="text/css"/>
+
+
+    <style type="text/css">
+        #graph {
+            width: 1024px;
+            height: 1024px;
+            border: 1px solid lightgray;
+        }
+
+        p {
+            max-width: 600px;
+        }
+
+        h4 {
+            margin-bottom: 3px;
+        }
+    </style>
+
+</head>
+
+<body>
+
+
+<p>
+    You can zoom in and out to cluster/decluster.
+</p>
+Stabilize when clustering:<input type="checkbox" id="stabilizeCheckbox">
+<div id="graph"></div>
+
+<script type="text/javascript">
+
+    var nodes = [];
+    var nodeIndex = {};
+
+    var edges = [];
+
+    var groups = [];
+    var groupIndex = {
+        "preprocessing": {label: "Preprocessing"},
+        "inference": {label: "Inference"}
+    };
+
+    var graphDefs = [
+        {
+            group: "preprocessing",
+            url: 'graphs/preprocessing.json'
+        },
+        {
+            group: "inference",
+            url: 'graphs/inference.json'
+        }
+    ];
+
+    var graphsLoaded = 0;
+
+    function loadGraph(def) {
+        $.getJSON(def.url, function (graph) {
+
+            var myNodes = {};
+            var myEdges = [];
+
+            graph.nodes.forEach(function (node) {
+                if (def.group !== null) {
+                    node.id = def.group + "_" + node.id;
+                }
+                node.group = def.group;
+                node.shape = "box";
+                myNodes[node.id] = node;
+                nodeIndex[node.id] = node;
+            });
+
+            graph.edges.forEach(function (edge) {
+                if (def.group !== null) {
+                    edge.to = def.group + "_" + edge.to;
+                    edge.from = def.group + "_" + edge.from;
+                }
+                myEdges.push(edge);
+            });
+
+            myEdges.forEach(function (edge) {
+                var from = nodeIndex[edge.from];
+                var to = nodeIndex[edge.to];
+
+                edge.label = "shape: (" + from.dshape.join(", ") + ")\ndtype: " + from.dtype;
+                edge.arrows = "to";
+            });
+
+            if (def.group !== null)
+                groups.push(def.group);
+
+            for (const id in myNodes)
+                nodes.push(myNodes[id]);
+
+            edges.push(...myEdges);
+
+            graphsLoaded++;
+
+            if (graphsLoaded == graphDefs.length)
+                loadGraph({group: null, url: "graphs/join.json"});
+
+            if (graphsLoaded == graphDefs.length + 1)
+                runVis();
+        });
+    }
+
+    // Load the individual graphs
+    graphDefs.forEach(function (def) {
+        loadGraph(def);
+    });
+
+    function runVis() {
+        var container = document.getElementById('graph');
+        var data = {
+            nodes: nodes,
+            edges: edges
+        };
+        var options = {
+            layout:
+                {
+                    randomSeed: 8,
+                },
+            physics:
+                {
+                    adaptiveTimestep: true,
+                    barnesHut:
+                        {
+                            //gravitationalConstant: -15450,
+                            avoidOverlap: 0.2,
+                            springLength: 200
+                        }
+                },
+            edges:
+                {
+                    smooth: true
+
+                },
+            nodes:
+                {
+
+                }
+        };
+
+        var network = new vis.Network(container, data, options);
+
+        function cluster(group) {
+            network.clustering.cluster({
+                joinCondition: function (nodeOptions) {
+                    return nodeOptions.group === group;
+                },
+                clusterNodeProperties: {
+                    label: groupIndex[group].label,
+                    group: group,
+                    shape: "box",
+                    allowSingleNodeCluster: true
+                }
+            });
+
+        }
+
+
+        // Initial Clustering
+        groups.forEach(function (group) {
+            cluster(group);
+        });
+
+        // we use the zoom event for our clustering
+        network.on('zoom', function (params) {
+
+        });
+
+        network.on('click', function (params) {
+            if (params.nodes.length == 1) {
+                var node = nodeIndex[params.nodes[0]];
+
+                if (network.isCluster(params.nodes[0]) == true) {
+                    network.openCluster(params.nodes[0]);
+
+                } else {
+                    cluster(node.group);
+                }
+
+            }
+        });
+    }
+
+
+</script>
+
+</body>
+</html>
+
