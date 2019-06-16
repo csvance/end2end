@@ -1,18 +1,6 @@
 {
   "nodes": [
     {
-      "id": "pad",
-      "label": "Pad",
-      "dshape": [
-        800,
-        800,
-        3
-      ],
-      "dtype": "uint8",
-      "shape": "image",
-      "image": "images/pad.jpg"
-    },
-    {
       "id": "resize",
       "label": "Resize: 224*224",
       "dshape": [
@@ -22,7 +10,7 @@
       ],
       "dtype": "float32",
       "shape": "image",
-      "image": "images/resized.jpg"
+      "image": "images/resize.jpg"
     },
     {
       "id": "float32",
@@ -46,10 +34,6 @@
     }
   ],
   "edges": [
-    {
-      "from": "pad",
-      "to": "resize"
-    },
     {
       "from": "resize",
       "to": "float32"

@@ -3,7 +3,7 @@
   "edges": [
     {
       "from": "input_input",
-      "to": "preprocessing_pad"
+      "to": "preprocessing_resize"
     },
     {
       "from": "preprocessing_tf",

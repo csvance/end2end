@@ -8,17 +8,22 @@
         7,
         4
       ],
-      "dtype": "float32"
+      "dtype": "float32",
+      "shape": "image",
+      "image": "images/detect.jpg"
     },
     {
       "id": "classes",
-      "label": "Classes",
+      "label": "Class",
       "dshape": [
         7,
         7,
         1
       ],
-      "dtype": "float32"
+      "dtype": "float32",
+      "shape": "image",
+      "image": "images/heat.jpg"
+
     }
   ],
   "edges": []
