@@ -36,7 +36,7 @@
     },
     {
       "id": "tf",
-      "label": "Preprocess 'tf': (input / 127.5) - 1",
+      "label": "Preprocess 'tf': (x / 127.5) - 1",
       "dshape": [
         224,
         224,
