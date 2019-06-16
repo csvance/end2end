@@ -1,0 +1,25 @@
+{
+  "nodes": [
+    {
+      "id": "bboxes",
+      "label": "Bounding Boxes",
+      "dshape": [
+        7,
+        7,
+        4
+      ],
+      "dtype": "float32"
+    },
+    {
+      "id": "classes",
+      "label": "Classes",
+      "dshape": [
+        7,
+        7,
+        1
+      ],
+      "dtype": "float32"
+    }
+  ],
+  "edges": []
+}

@@ -1,35 +1,5 @@
 {
-  "inputs": [
-    "equalize_histogram"
-  ],
-  "outputs": [
-    "tf"
-  ],
   "nodes": [
-    {
-      "id": "input",
-      "label": "Input",
-      "dshape": [
-        800,
-        600,
-        3
-      ],
-      "dtype": "uint8",
-      "shape": "image",
-      "image": "images/src.jpg"
-    },
-    {
-      "id": "equalize_histogram",
-      "label": "Equalize Histogram",
-      "dshape": [
-        800,
-        600,
-        3
-      ],
-      "dtype": "uint8",
-      "shape": "image",
-      "image": "images/hist.jpg"
-    },
     {
       "id": "pad",
       "label": "Pad",
@@ -66,7 +36,7 @@
     },
     {
       "id": "tf",
-      "label": "(input / 127.5) - 1",
+      "label": "Preprocess 'tf': (input / 127.5) - 1",
       "dshape": [
         224,
         224,
@@ -76,14 +46,6 @@
     }
   ],
   "edges": [
-    {
-      "from": "input",
-      "to": "equalize_histogram"
-    },
-    {
-      "from": "equalize_histogram",
-      "to": "pad"
-    },
     {
       "from": "pad",
       "to": "resize"

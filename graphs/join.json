@@ -1,11 +1,21 @@
 {
-  "inputs": [],
-  "outputs": [],
   "nodes": [],
   "edges": [
     {
+      "from": "input_input",
+      "to": "preprocessing_pad"
+    },
+    {
       "from": "preprocessing_tf",
-      "to": "inference_mobilenet"
+      "to": "mobiledetectnet_input_1"
+    },
+    {
+      "from": "mobiledetectnet_bboxes",
+      "to": "output_bboxes"
+    },
+    {
+      "from": "mobiledetectnet_classes",
+      "to": "output_classes"
     }
   ]
 }
