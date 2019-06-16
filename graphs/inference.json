@@ -7,30 +7,52 @@
   ],
   "nodes": [
     {
-      "id": "input",
-      "label": "Input",
-      "dshape": [
-        224,
-        224,
-        3
-      ],
-      "dtype": "float32"
-    },
-    {
-      "id": "output",
-      "label": "Output",
+      "id": "mobilenet",
+      "label": "MobileNet V2",
       "dshape": [
         7,
         7,
         256
       ],
       "dtype": "float32"
+    },
+    {
+      "id": "flatten",
+      "label": "Flatten",
+      "dshape": [
+        12544
+      ],
+      "dtype": "float32"
+    },
+    {
+      "id": "dense",
+      "label": "Dense",
+      "dshape": [
+        256
+      ],
+      "dtype": "float32"
+    },
+    {
+      "id": "classes",
+      "label": "Classes",
+      "dshape": [
+        7
+      ],
+      "dtype": "float32"
     }
   ],
   "edges": [
     {
-      "from": "input",
-      "to": "output"
+      "from": "mobilenet",
+      "to": "flatten"
+    },
+    {
+      "from": "flatten",
+      "to": "dense"
+    },
+    {
+      "from": "dense",
+      "to": "classes"
     }
   ]
 }

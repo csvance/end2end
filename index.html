@@ -11,29 +11,15 @@
 
     <style type="text/css">
         #graph {
-            width: 1024px;
-            height: 1024px;
-            border: 1px solid lightgray;
+            height: 100vh;
         }
 
-        p {
-            max-width: 600px;
-        }
-
-        h4 {
-            margin-bottom: 3px;
-        }
     </style>
 
 </head>
 
 <body>
 
-
-<p>
-    You can zoom in and out to cluster/decluster.
-</p>
-Stabilize when clustering:<input type="checkbox" id="stabilizeCheckbox">
 <div id="graph"></div>
 
 <script type="text/javascript">
@@ -61,6 +47,7 @@ Stabilize when clustering:<input type="checkbox" id="stabilizeCheckbox">
     ];
 
     var graphsLoaded = 0;
+    var ready = false;
 
     function loadGraph(def) {
         $.getJSON(def.url, function (graph) {
@@ -73,7 +60,8 @@ Stabilize when clustering:<input type="checkbox" id="stabilizeCheckbox">
                     node.id = def.group + "_" + node.id;
                 }
                 node.group = def.group;
-                node.shape = "box";
+                if (node.shape === undefined)
+                    node.shape = "box";
                 myNodes[node.id] = node;
                 nodeIndex[node.id] = node;
             });
@@ -83,6 +71,9 @@ Stabilize when clustering:<input type="checkbox" id="stabilizeCheckbox">
                     edge.to = def.group + "_" + edge.to;
                     edge.from = def.group + "_" + edge.from;
                 }
+
+                edge.font = {size: 10};
+
                 myEdges.push(edge);
             });
 
@@ -117,6 +108,8 @@ Stabilize when clustering:<input type="checkbox" id="stabilizeCheckbox">
         loadGraph(def);
     });
 
+    var network = null;
+
     function runVis() {
         var container = document.getElementById('graph');
         var data = {
@@ -124,32 +117,19 @@ Stabilize when clustering:<input type="checkbox" id="stabilizeCheckbox">
             edges: edges
         };
         var options = {
-            layout:
-                {
-                    randomSeed: 8,
-                },
-            physics:
-                {
-                    adaptiveTimestep: true,
-                    barnesHut:
-                        {
-                            //gravitationalConstant: -15450,
-                            avoidOverlap: 0.2,
-                            springLength: 200
-                        }
-                },
-            edges:
-                {
-                    smooth: true
-
-                },
-            nodes:
-                {
-
+            layout: {
+                hierarchical: {
+                    direction: "UD",
+                    sortMethod: "directed",
+                    levelSeparation: 150
                 }
+            },
+            physics: {enabled: false},
+            edges: {},
+            nodes: {}
         };
 
-        var network = new vis.Network(container, data, options);
+        network = new vis.Network(container, data, options);
 
         function cluster(group) {
             network.clustering.cluster({
@@ -159,13 +139,12 @@ Stabilize when clustering:<input type="checkbox" id="stabilizeCheckbox">
                 clusterNodeProperties: {
                     label: groupIndex[group].label,
                     group: group,
-                    shape: "box",
+                    shape: "database",
                     allowSingleNodeCluster: true
                 }
             });
 
         }
-
 
         // Initial Clustering
         groups.forEach(function (group) {
@@ -177,20 +156,67 @@ Stabilize when clustering:<input type="checkbox" id="stabilizeCheckbox">
 
         });
 
-        network.on('click', function (params) {
+        network.on('doubleClick', function (params) {
             if (params.nodes.length == 1) {
                 var node = nodeIndex[params.nodes[0]];
 
                 if (network.isCluster(params.nodes[0]) == true) {
                     network.openCluster(params.nodes[0]);
-
                 } else {
                     cluster(node.group);
                 }
 
             }
         });
+
+        ready = true;
     }
+
+
+    $(document).keypress(function (e) {
+        const key = e.key;
+
+        var connected = null;
+        var connectedNode = null;
+
+        if (ready) {
+            var selected = network.getSelectedNodes();
+
+            if (selected.length === 1) {
+
+                if (key === "a") {
+                    connected = network.getConnectedNodes(selected[0], "from");
+
+                    if(connected.length === 2 && network.isCluster(connected[1])) {
+                        network.openCluster(connected[1]);
+                    }else if (connected.length === 1 && network.isCluster(connected[0])){
+                        network.openCluster(connected[0]);
+                    }else if (connected.length === 1) {
+
+                        connectedNode = connected[0];
+
+                        network.focus(connectedNode);
+                        network.selectNodes([connectedNode]);
+                    }
+
+                }else if(key === "d"){
+                    connected = network.getConnectedNodes(selected[0], "to");
+
+                    if(connected.length === 2 && network.isCluster(connected[1])) {
+                        network.openCluster(connected[1]);
+                    }else if (connected.length === 1 && network.isCluster(connected[0])){
+                        network.openCluster(connected[0]);
+                    }else if (connected.length === 1) {
+
+                        connectedNode = connected[0];
+
+                        network.focus(connectedNode);
+                        network.selectNodes([connectedNode]);
+                    }
+                }
+            }
+        }
+    });
 
 
 </script>

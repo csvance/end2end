@@ -5,7 +5,7 @@
   "edges": [
     {
       "from": "preprocessing_tf",
-      "to": "inference_input"
+      "to": "inference_mobilenet"
     }
   ]
 }

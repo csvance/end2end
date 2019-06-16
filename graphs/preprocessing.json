@@ -7,24 +7,40 @@
   ],
   "nodes": [
     {
+      "id": "input",
+      "label": "Input",
+      "dshape": [
+        800,
+        600,
+        3
+      ],
+      "dtype": "uint8",
+      "shape": "image",
+      "image": "images/src.jpg"
+    },
+    {
       "id": "equalize_histogram",
       "label": "Equalize Histogram",
       "dshape": [
-        1024,
-        1024,
+        800,
+        600,
         3
       ],
-      "dtype": "uint8"
+      "dtype": "uint8",
+      "shape": "image",
+      "image": "images/hist.jpg"
     },
     {
-      "id": "float32",
-      "label": "Cast: float32",
+      "id": "pad",
+      "label": "Pad",
       "dshape": [
-        1024,
-        1024,
+        800,
+        800,
         3
       ],
-      "dtype": "float32"
+      "dtype": "uint8",
+      "shape": "image",
+      "image": "images/pad.jpg"
     },
     {
       "id": "resize",
@@ -32,6 +48,18 @@
       "dshape": [
         224,
         224,
+        3
+      ],
+      "dtype": "float32",
+      "shape": "image",
+      "image": "images/resized.jpg"
+    },
+    {
+      "id": "float32",
+      "label": "Cast: float32",
+      "dshape": [
+        1024,
+        1024,
         3
       ],
       "dtype": "float32"
@@ -49,15 +77,23 @@
   ],
   "edges": [
     {
-      "from": "equalize_histogram",
-      "to": "float32"
+      "from": "input",
+      "to": "equalize_histogram"
     },
     {
-      "from": "float32",
+      "from": "equalize_histogram",
+      "to": "pad"
+    },
+    {
+      "from": "pad",
       "to": "resize"
     },
     {
       "from": "resize",
+      "to": "float32"
+    },
+    {
+      "from": "float32",
       "to": "tf"
     }
   ]
