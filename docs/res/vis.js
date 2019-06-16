@@ -44050,17 +44050,12 @@ return /******/ (function(modules) { // webpackBootstrap
             levelA = _this6.hierarchical.levels[nodeA.id] = minLevel;
           }
 
-        if (edge.toId == nodeB.id) {
-            if (_this6.hierarchical.levels[nodeB.id] === undefined)
-                _this6.hierarchical.levels[nodeB.id] = levelA + 1;
-            else
-                _this6.hierarchical.levels[nodeB.id] = Math.max(levelA + 1, _this6.hierarchical.levels[nodeB.id]);
-        } else {
-            if (_this6.hierarchical.levels[nodeB.id] === undefined)
-                _this6.hierarchical.levels[nodeB.id] = levelA - 1;
-            else
-                _this6.hierarchical.levels[nodeB.id] = Math.min(levelA - 1, _this6.hierarchical.levels[nodeB.id]);
-        }
+          if (edge.toId == nodeB.id) {
+            _this6.hierarchical.levels[nodeB.id] = levelA + 1;
+          } else {
+            _this6.hierarchical.levels[nodeB.id] = levelA - 1;
+          }
+
 
         };
 

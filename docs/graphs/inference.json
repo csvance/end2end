@@ -1095,10 +1095,6 @@
   ],
   "edges": [
     {
-      "from": "conv_pw_13_relu",
-      "to": "bboxes_dense"
-    },
-    {
       "from": "bboxes_dense",
       "to": "bboxes"
     },
